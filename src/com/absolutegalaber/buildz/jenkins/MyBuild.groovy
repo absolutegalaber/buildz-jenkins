@@ -39,9 +39,12 @@ class MyBuild {
     }
 
     static void addBuildzLabels(script, Long buildId, Map<String, String> labels) {
-
-        String addLabelsRequest = new JsonOutput().toJson(labels)
-        script.writeFile file: 'addLabelsRequest.json', text: addLabelsRequest
+        def toWrite = """["""
+        labels.forEach{ Map.Entry<String, String> entry->
+            toWrite += """ {"key":"${entry.key}", value:"${entry.value}"} """
+        }
+        toWrite += """]"""
+        script.writeFile file: 'addLabelsRequest.json', text: toWrite
         script.sh(
                 script: """curl -X POST -H "Content-Type: application/json" --data @addLabelsRequest.json http://buildz-api-vpint05.vpint.o2online.de/api/v1/builds/add-labels/${buildId}"""
         )
