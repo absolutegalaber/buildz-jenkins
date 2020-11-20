@@ -11,7 +11,6 @@ class MyBuild {
     "branch":"${branch}"
 }
 """
-        writeFile file: 'nextVersionRequest.json', text: nextVersionRequest
         //POST to API into a File
         String response = script.sh(
                 returnStdout: true,
