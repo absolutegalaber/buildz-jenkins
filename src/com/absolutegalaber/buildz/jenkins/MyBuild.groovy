@@ -6,11 +6,6 @@ import groovy.json.JsonSlurper
 
 class MyBuild implements Serializable {
 
-    public class BuildzLabel implements Serializable {
-        String key
-        String value
-    }
-
     static Long nextBuildzNumber(script, String project, String branch) {
         String nextVersionRequest = """
 {
@@ -44,8 +39,8 @@ class MyBuild implements Serializable {
         return new JsonSlurper().parseText(response).id
     }
 
-    static void addBuildzLabels(script, Long buildId, List<BuildzLabel> labels) {
-        script.writeFile file: 'addLabelsRequest.json', text: new JsonOutput().toJson(labels)
+    static void addBuildzLabel(script, Long buildId, String key, String value) {
+        script.writeFile file: 'addLabelsRequest.json', text: """["key":"${key}, "value": "${value}"]"""
         script.sh(
                 script: """curl -X POST -H "Content-Type: application/json" --data @addLabelsRequest.json http://buildz-api-vpint05.vpint.o2online.de/api/v1/builds/add-labels/${buildId}"""
         )
