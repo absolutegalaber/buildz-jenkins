@@ -39,7 +39,7 @@ class MyBuild implements Serializable {
     }
 
     static void addBuildzLabel(script, Long buildId, String key, String value) {
-        script.writeFile file: 'addLabelsRequest.json', text: """[{"key":"${key}, "value": "${value}"}]"""
+        script.writeFile file: 'addLabelsRequest.json', text: """[{"key":"${key}", "value": "${value}"}]"""
         script.sh(
                 script: """curl -X POST -H "Content-Type: application/json" --data @addLabelsRequest.json http://buildz-api-vpint05.vpint.o2online.de/api/v1/builds/add-labels/${buildId}"""
         )
