@@ -5,7 +5,7 @@ import groovy.json.JsonSlurper
 
 class MyBuild {
 
-    static Long buildNumber(script, String project, String branch) {
+    static Long nextBuildzNumber(script, String project, String branch) {
         String nextVersionRequest = """
 {
     "project": "${project}",
@@ -21,7 +21,7 @@ class MyBuild {
         return new JsonSlurper().parseText(response).counter
     }
 
-    static Long createBuild(script, String project, String branch, Long buildNumber) {
+    static Long createBuildzBuild(script, String project, String branch, Long buildNumber) {
         String createBuildRequest = """
 {
     "project": "${project}",
@@ -38,7 +38,7 @@ class MyBuild {
         return new JsonSlurper().parseText(response).id
     }
 
-    static void addLabels(script, Long buildId, Map<String, String> labels) {
+    static void addBuildzLabels(script, Long buildId, Map<String, String> labels) {
 
         String addLabelsRequest = new JsonOutput().toJson(labels)
         script.writeFile file: 'addLabelsRequest.json', text: addLabelsRequest
