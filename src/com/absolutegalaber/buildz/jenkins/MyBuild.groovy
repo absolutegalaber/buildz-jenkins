@@ -1,9 +1,15 @@
 package com.absolutegalaber.buildz.jenkins
 
+
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-class MyBuild {
+class MyBuild implements Serializable {
+
+    public class BuildzLabel implements Serializable {
+        String key
+        String value
+    }
 
     static Long nextBuildzNumber(script, String project, String branch) {
         String nextVersionRequest = """
@@ -38,13 +44,8 @@ class MyBuild {
         return new JsonSlurper().parseText(response).id
     }
 
-    static void addBuildzLabels(script, Long buildId, Map<String, String> labels) {
-        def toWrite = """["""
-        labels.forEach{ Map.Entry<String, String> entry->
-            toWrite += """ {"key":"${entry.key}", value:"${entry.value}"} """
-        }
-        toWrite += """]"""
-        script.writeFile file: 'addLabelsRequest.json', text: toWrite
+    static void addBuildzLabels(script, Long buildId, List<BuildzLabel> labels) {
+        script.writeFile file: 'addLabelsRequest.json', text: new JsonOutput().toJson(labels)
         script.sh(
                 script: """curl -X POST -H "Content-Type: application/json" --data @addLabelsRequest.json http://buildz-api-vpint05.vpint.o2online.de/api/v1/builds/add-labels/${buildId}"""
         )
